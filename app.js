@@ -52,4 +52,5 @@
 
     core.value('API_ENDPOINT', 'http://api.getsoundcloudify.com');
     core.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
+    core.value('YOUTUBE_KEY', 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4');
 }());

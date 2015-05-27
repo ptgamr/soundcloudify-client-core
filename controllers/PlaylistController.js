@@ -73,7 +73,7 @@
                 $mdDialog.show({
                     parent: parentEl,
                     targetEvent: $event,
-                    templateUrl: 'scripts/views/import.html',
+                    templateUrl: 'scripts/core/views/import.html',
                     controller: PlaylistImportDialogController
                 });
 

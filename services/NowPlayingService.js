@@ -237,9 +237,9 @@
             if (trackIds) {
                 nowplaying.trackIds = trackIds;
                 if (isExtension) {
-                    localStorage.setItem('nowplaying', JSON.stringify(trackIds));
-                } else {
                     backgroundPage.mainPlayer.saveTrackIds(trackIds);
+                } else {
+                    localStorage.setItem('nowplaying', JSON.stringify(trackIds));
                 }
             }
         }

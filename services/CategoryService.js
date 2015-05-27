@@ -4,11 +4,13 @@
     angular.module('soundcloudify.core')
         .service("Category", CategoryService);
 
-    function CategoryService($http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT){
+    function CategoryService($http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT, YahooProxy, SCConfiguration){
 
         var cachedCategory = JSON.parse(localStorage.getItem('charts')) || [];
         var cachedRedditVideoIds = [];
-        
+        var isWeb = SCConfiguration.isWeb();
+        var SOUNDCLOUD_API_V2_URL = 'https://api-v2.soundcloud.com';
+
         return {
             getList: getList,
             getTracks: getTracks,
@@ -22,39 +24,71 @@
                 if (cachedCategory.length) {
                     resolve(cachedCategory);
                 } else {
-                    var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
-                    $http.get('https://api-v2.soundcloud.com/explore/categories', { params: params })
-                    .success(function(data) {
-                        cachedCategory = data['music'] || [];
-                        resolve(cachedCategory);
 
-                        localStorage.setItem('charts', JSON.stringify(cachedCategory));
-                    });
+                    if (isWeb) {
+
+                        var soundcloudParams = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
+                        var soundcloudUrl = window.ServiceHelpers.buildUrl(SOUNDCLOUD_API_V2_URL + '/explore/categories', soundcloudParams)
+
+                        YahooProxy
+                            .request(soundcloudUrl)
+                            .then(function(data) {
+                                cachedCategory = data['music'] || [];
+                                resolve(cachedCategory);
+                                localStorage.setItem('charts', JSON.stringify(cachedCategory));
+                            });
+
+                    } else {
+                        var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
+                        $http.get(SOUNDCLOUD_API_V2_URL + '/explore/categories', { params: params })
+                        .success(function(data) {
+                            cachedCategory = data['music'] || [];
+                            resolve(cachedCategory);
+
+                            localStorage.setItem('charts', JSON.stringify(cachedCategory));
+                        });
+                    }
+
                 }
             });
 
         }
 
         function getTracks(category, pagingObject) {
-            var params = { limit: pagingObject.limit, offset: pagingObject.skip, linked_partitioning: 1, client_id: CLIENT_ID };
 
-            return $q(function(resolve, reject) {
-                $http({
-                    url: 'https://api-v2.soundcloud.com/explore/' + category,
-                    method: 'GET',
-                    params: params,
-                    transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                        if (!result || !result.tracks) return [];
-                        return {
-                            tracks: TrackAdapter.adaptMultiple(result.tracks, 'sc')
-                        };
-                    })
-                }).success(function(data) {
-                    resolve(data);
-                }).error(function() {
-                    reject();
+            if (isWeb) {
+                var soundcloudParams = { limit: pagingObject.limit, offset: pagingObject.skip, linked_partitioning: 1, client_id: CLIENT_ID };
+                var soundcloudUrl = window.ServiceHelpers.buildUrl(SOUNDCLOUD_API_V2_URL + '/explore/' + category, soundcloudParams);
+
+                var customTransform = function(result) {
+                    if (!result || !result.tracks) return [];
+                    return {
+                        tracks: TrackAdapter.adaptMultiple(result.tracks, 'sc')
+                    };
+                };
+
+                return YahooProxy.request(soundcloudUrl, customTransform);
+            } else {
+                var params = { limit: pagingObject.limit, offset: pagingObject.skip, linked_partitioning: 1, client_id: CLIENT_ID };
+
+                return $q(function(resolve, reject) {
+                    $http({
+                        url: SOUNDCLOUD_API_V2_URL + '/explore/' + category,
+                        method: 'GET',
+                        params: params,
+                        transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
+                            if (!result || !result.tracks) return [];
+                            return {
+                                tracks: TrackAdapter.adaptMultiple(result.tracks, 'sc')
+                            };
+                        })
+                    }).success(function(data) {
+                        resolve(data);
+                    }).error(function() {
+                        reject();
+                    });
                 });
-            });
+            }
         }
 
         function getRedditHot(pagingObject) {
