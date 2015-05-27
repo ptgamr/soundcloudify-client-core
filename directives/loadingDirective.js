@@ -12,7 +12,7 @@
             scope: {
                 'variation': '@'
             },
-            templateUrl: 'scripts/views/loadingDirective.html',
+            templateUrl: 'scripts/core/views/loadingDirective.html',
             link : function($scope) {
                 initParams($scope);
             }

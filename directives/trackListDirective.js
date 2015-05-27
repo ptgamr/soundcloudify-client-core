@@ -12,7 +12,7 @@
     function trackListDirective($playlistMenu, CorePlayer, PlaylistService, NowPlaying, StarService, $mdToast, GATracker) {
         return {
             restrict: 'E',
-            templateUrl: 'scripts/views/trackList.html',
+            templateUrl: 'scripts/core/views/trackList.html',
             scope: {
                 tracks: '=',
                 trackClick: '&',

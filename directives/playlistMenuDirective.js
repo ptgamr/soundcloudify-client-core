@@ -8,7 +8,7 @@
     function playlistMenuDirective($rootScope, PlaylistService, $mdToast) {
         return {
             restrict: 'E',
-            templateUrl: 'scripts/views/playlist-menu.html',
+            templateUrl: 'scripts/core/views/playlist-menu.html',
             controller: function($scope, PlaylistService) {
                 
                 $scope.playlists = PlaylistService.getList();

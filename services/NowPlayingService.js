@@ -14,15 +14,31 @@
     var ORIGIN_LOCAL = 'l';
     var ORIGIN_SERVER = 's';
 
-    function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, StorageService){
+    var DEFAULT_STATE = {
+        currentTrack: false,
+        currentIndex: 0,
+        playing: false,
+        currentTime: 0,
+        duration: 0,
+        volume: 0.5,
+        repeat: 0,
+        shuffle: false,
+        scrobbleEnabled: false,
+        scrobbled: false,
+        lastFmInvalid: false
+    };
 
-        var backgroundPage = chrome.extension.getBackgroundPage();
+    function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, StorageService, SCConfiguration){
+
+        var isExtension = SCConfiguration.isExtension();
+
+        var backgroundPage = isExtension ? chrome.extension.getBackgroundPage() : null;
 
         //local cache, used by CorePlayer, and is watched by AngularJS for changes
         var nowplaying = {
             trackIds: []
         };
-        var state = backgroundPage.mainPlayer.state;
+        var state = isExtension ? backgroundPage.mainPlayer.state : (JSON.parse(localStorage.getItem('playerstate')) || DEFAULT_STATE);
 
         //Storage API for simplify IndexedDB interaction
         var Storage = StorageService.getStorageInstance('nowplaying');
@@ -53,7 +69,7 @@
                 });
 
                 nowplaying.trackIds = trackIds;
-                backgroundPage.mainPlayer.saveTrackIds(trackIds);
+                _saveTrackIds(trackIds);
             });
         }
 
@@ -110,12 +126,12 @@
                                     Storage.increaseOrder(tobeUpsert);
                                 }
 
-                                backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+                                _saveTrackIds(nowplaying.trackIds);
                                 resolve();
                             } else {
                                 nowplaying.trackIds.unshift(track.uuid);
 
-                                backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+                                _saveTrackIds(nowplaying.trackIds);
                                 resolve();
                             }
                         });
@@ -124,7 +140,7 @@
                     nowplaying.trackIds.unshift(track.uuid);
                     Storage.insert(track);
 
-                    backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+                    _saveTrackIds(nowplaying.trackIds);
                     resolve();
                 }
 
@@ -154,7 +170,7 @@
                         return track.uuid;
                     });
 
-                    backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+                    _saveTrackIds(nowplaying.trackIds);
 
                     Storage.insert(tracksToAdd);
 
@@ -172,7 +188,7 @@
             var uuid = nowplaying.trackIds[position];
             Storage.delete(uuid);
             nowplaying.trackIds.splice(position, 1);
-            backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+            _saveTrackIds(nowplaying.trackIds);
         }
 
         /**
@@ -182,7 +198,7 @@
             return $q(function(resolve, reject) {
                 Storage.delete(nowplaying.trackIds);
                 nowplaying.trackIds = [];
-                backgroundPage.mainPlayer.saveTrackIds([]);
+                _saveTrackIds([]);
                 resolve();
             });
         }
@@ -192,7 +208,11 @@
          */
         function saveState(newState) {
             state = newState;
-            backgroundPage.mainPlayer.saveState(newState);
+            if(isExtension) {
+                backgroundPage.mainPlayer.saveState(newState);
+            } else {
+                localStorage.setItem('playerstate', JSON.stringify(newState));
+            }
         }
 
         /**
@@ -208,6 +228,20 @@
         function markTrackError(track) {
             track.error = true;
             Storage.upsert(track);
+        }
+
+        /**
+         * save trackIds
+         */
+        function _saveTrackIds(trackIds) {
+            if (trackIds) {
+                nowplaying.trackIds = trackIds;
+                if (isExtension) {
+                    localStorage.setItem('nowplaying', JSON.stringify(trackIds));
+                } else {
+                    backgroundPage.mainPlayer.saveTrackIds(trackIds);
+                }
+            }
         }
     };
 

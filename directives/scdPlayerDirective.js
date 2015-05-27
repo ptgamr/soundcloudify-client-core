@@ -7,7 +7,7 @@
     function soundCloudifyPlayerDirective(CorePlayer, $mdDialog, GATracker) {
         return {
             restrict: 'E',
-            templateUrl: 'scripts/views/player.html',
+            templateUrl: 'scripts/core/views/player.html',
             link: function(scope, element, attrs) {
 
                 scope.player = CorePlayer;
