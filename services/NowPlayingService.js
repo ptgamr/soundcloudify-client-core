@@ -31,6 +31,8 @@
     function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, StorageService, SCConfiguration){
 
         var isExtension = SCConfiguration.isExtension();
+        var isChromeApp = SCConfiguration.isChromeApp();
+        var isWeb = SCConfiguration.isWeb();
 
         var backgroundPage = isExtension ? chrome.extension.getBackgroundPage() : null;
 
@@ -38,7 +40,17 @@
         var nowplaying = {
             trackIds: []
         };
-        var state = isExtension ? backgroundPage.mainPlayer.state : (JSON.parse(localStorage.getItem('playerstate')) || DEFAULT_STATE);
+        var state = DEFAULT_STATE;
+
+        if (isExtension) {
+            state = backgroundPage.mainPlayer.state;
+        } else if (isChromeApp) {
+            chrome.storage.local.get('playerstate', function(data) {
+                state = data['playerstate']
+            });
+        } else {
+            state = JSON.parse(localStorage.getItem('playerstate')) || DEFAULT_STATE;
+        }
 
         //Storage API for simplify IndexedDB interaction
         var Storage = StorageService.getStorageInstance('nowplaying');
@@ -210,6 +222,8 @@
             state = newState;
             if(isExtension) {
                 backgroundPage.mainPlayer.saveState(newState);
+            } else if (isChromeApp) {
+                chrome.storage.local.set({'playerstate': newState});
             } else {
                 localStorage.setItem('playerstate', JSON.stringify(newState));
             }
@@ -238,6 +252,8 @@
                 nowplaying.trackIds = trackIds;
                 if (isExtension) {
                     backgroundPage.mainPlayer.saveTrackIds(trackIds);
+                } else if (isChromeApp) {
+                    chrome.storage.local.set({'nowplaying': trackIds});
                 } else {
                     localStorage.setItem('nowplaying', JSON.stringify(trackIds));
                 }

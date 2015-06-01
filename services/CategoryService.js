@@ -6,7 +6,7 @@
 
     function CategoryService($http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT, YahooProxy, SCConfiguration){
 
-        var cachedCategory = JSON.parse(localStorage.getItem('charts')) || [];
+        var cachedCategory;
         var cachedRedditVideoIds = [];
         var isWeb = SCConfiguration.isWeb();
         var SOUNDCLOUD_API_V2_URL = 'https://api-v2.soundcloud.com';
@@ -17,41 +17,64 @@
             getRedditHot: getRedditHot
         };
 
+        function getStoredCharts() {
+            return $q(function(resolve, reject) {
+                if (SCConfiguration.isChromeApp()) {
+                    chrome.storage.local.get('activeTab', function(data) {
+                        resolve(data['charts'] || []);
+                    });
+                } else {
+                    resolve(JSON.parse(localStorage.getItem('charts')) || []);
+                }                
+            });
+        }
+
+        function saveCharts(charts) {
+            if (SCConfiguration.isChromeApp()) {
+                chrome.storage.local.set({'charts': charts});
+            } else {
+                localStorage.setItem('charts', JSON.stringify(charts));
+            }
+        }
+
         function getList(){
 
             return $q(function(resolve, reject) {
 
-                if (cachedCategory.length) {
-                    resolve(cachedCategory);
-                } else {
+                getStoredCharts().then(function(data) {
+                    
+                    cachedCategory = data;
 
-                    if (isWeb) {
+                    if (cachedCategory.length) {
+                        resolve(cachedCategory);
+                    } else {
 
-                        var soundcloudParams = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
-                        var soundcloudUrl = window.ServiceHelpers.buildUrl(SOUNDCLOUD_API_V2_URL + '/explore/categories', soundcloudParams)
+                        if (isWeb) {
 
-                        YahooProxy
-                            .request(soundcloudUrl)
-                            .then(function(data) {
+                            var soundcloudParams = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
+                            var soundcloudUrl = window.ServiceHelpers.buildUrl(SOUNDCLOUD_API_V2_URL + '/explore/categories', soundcloudParams)
+
+                            YahooProxy
+                                .request(soundcloudUrl)
+                                .then(function(data) {
+                                    cachedCategory = data['music'] || [];
+                                    resolve(cachedCategory);
+                                    saveCharts(cachedCategory);
+                                });
+
+                        } else {
+                            var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
+                            $http.get(SOUNDCLOUD_API_V2_URL + '/explore/categories', { params: params })
+                            .success(function(data) {
                                 cachedCategory = data['music'] || [];
                                 resolve(cachedCategory);
-                                localStorage.setItem('charts', JSON.stringify(cachedCategory));
+                                saveCharts(cachedCategory);
                             });
+                        }
 
-                    } else {
-                        var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
-                        $http.get(SOUNDCLOUD_API_V2_URL + '/explore/categories', { params: params })
-                        .success(function(data) {
-                            cachedCategory = data['music'] || [];
-                            resolve(cachedCategory);
-
-                            localStorage.setItem('charts', JSON.stringify(cachedCategory));
-                        });
                     }
-
-                }
+                });
             });
-
         }
 
         function getTracks(category, pagingObject) {

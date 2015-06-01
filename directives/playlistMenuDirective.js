@@ -5,10 +5,10 @@
         .directive('playlistMenu', playlistMenuDirective)
         .service('$playlistMenu', playlistMenuService);
 
-    function playlistMenuDirective($rootScope, PlaylistService, $mdToast) {
+    function playlistMenuDirective($rootScope, PlaylistService, $mdToast, SCConfiguration) {
         return {
             restrict: 'E',
-            templateUrl: 'scripts/core/views/playlist-menu.html',
+            templateUrl: SCConfiguration.getDirectiveViewPath() + '/playlist-menu.html',
             controller: function($scope, PlaylistService) {
                 
                 $scope.playlists = PlaylistService.getList();

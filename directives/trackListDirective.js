@@ -9,10 +9,10 @@
         return reactDirective('TrackList')
     };
 
-    function trackListDirective($playlistMenu, CorePlayer, PlaylistService, NowPlaying, StarService, $mdToast, GATracker) {
+    function trackListDirective($playlistMenu, CorePlayer, PlaylistService, NowPlaying, StarService, $mdToast, GATracker, SCConfiguration) {
         return {
             restrict: 'E',
-            templateUrl: 'scripts/core/views/trackList.html',
+            templateUrl: SCConfiguration.getDirectiveViewPath() + '/trackList.html',
             scope: {
                 tracks: '=',
                 trackClick: '&',

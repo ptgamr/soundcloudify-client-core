@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function loadingDirective() {
+    function loadingDirective(SCConfiguration) {
 
         var initParams = function($scope) {
             $scope.ver = $scope.variation || 4;
@@ -12,7 +12,7 @@
             scope: {
                 'variation': '@'
             },
-            templateUrl: 'scripts/core/views/loadingDirective.html',
+            templateUrl: SCConfiguration.getDirectiveViewPath() + '/loadingDirective.html',
             link : function($scope) {
                 initParams($scope);
             }

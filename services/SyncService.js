@@ -9,10 +9,20 @@
     var PLAYLIST_STORAGE_KEY = 'playlist';
     var NOW_PLAYING_LIST_KEY = 'nowPlaying';
 
-    function SyncService($rootScope, $log, $q, $http, $timeout, API_ENDPOINT, StorageService){
+    function SyncService($rootScope, $log, $q, $http, $timeout, API_ENDPOINT, StorageService, SCConfiguration){
 
         var user;
-        var lastSynced = localStorage.getItem('lastSynced');
+        var lastSynced;
+
+        if (SCConfiguration.isChromeApp()) {
+
+            chrome.storage.local.get('lastSynced', function(data) {
+                lastSynced = data['lastSynced']
+            });
+
+        } else {
+            lastSynced = localStorage.getItem('lastSynced');
+        }
 
         var PlaylistStorage = StorageService.getStorageInstance('playlist');
         var StarredStorage = StorageService.getStorageInstance('starred');
@@ -364,7 +374,12 @@
 
             if (!lastSynced) return;
 
-            localStorage.setItem('lastSynced', lastSynced);
+            if (SCConfiguration.isChromeApp()) {
+                chrome.storage.local.set({'lastSynced': lastSynced});
+            } else {
+                localStorage.setItem('lastSynced', lastSynced);
+            }
+
             $rootScope.$broadcast('sync.completed');
             $rootScope.syncing = false;
         }

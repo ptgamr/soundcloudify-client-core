@@ -3,22 +3,40 @@
     angular.module('soundcloudify.core')
             .controller('DiscoveryController', DiscoveryController)
 
-    function DiscoveryController($scope, $mdSidenav, $state, $timeout) {
+    function DiscoveryController($scope, $q, $mdSidenav, $state, $timeout, SCConfiguration) {
         var vm = this;
         
         var states = ['nowPlaying', 'search', 'playlist.list', 'charts.list'];
 
-        var storage = localStorage;
-
-        var activeTab = parseInt(localStorage.getItem('activeTab'));
-
-        vm.selectedIndex = isNaN(activeTab) ? 3 : activeTab;
+        getActiveTab().then(function(activeTab) {
+            vm.selectedIndex = isNaN(activeTab) ? 3 : activeTab;
+        });
 
         vm.onTabSelect = function() {
             $timeout(function() {
-                localStorage.setItem('activeTab', vm.selectedIndex);
+                saveActiveTab(vm.selectedIndex);
                 $state.go(states[vm.selectedIndex]);
             });
         };
+
+        function getActiveTab() {
+            return $q(function(resolve, reject) {
+                if (SCConfiguration.isChromeApp()) {
+                    chrome.storage.local.get('activeTab', function(data) {
+                        resolve(data['activeTab']);
+                    });
+                } else {
+                    resolve(parseInt(localStorage.getItem('activeTab')));
+                }
+            });
+        }
+
+        function saveActiveTab(index) {
+            if (SCConfiguration.isChromeApp()) {
+                chrome.storage.local.set({'activeTab': index});
+            } else {
+                localStorage.setItem('activeTab', vm.selectedIndex);
+            }
+        }
     }
 }());

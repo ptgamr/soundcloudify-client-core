@@ -4,14 +4,20 @@
     angular.module('soundcloudify.core')
         .service("LastFMAuthentication", LastFMAuthentication);
 
-    function LastFMAuthentication($http, Messaging){
+    function LastFMAuthentication($http, $q, Messaging, SCConfiguration){
 
         var API_URL = 'https://ws.audioscrobbler.com/2.0/',
             API_KEY = '270d7aec2d7de22c88d90f36c66c9a1a',
             API_SECRET = 'c8a7d4cbfba61e6b777220878bfa8cc1';
 
-        var _sessionKey = localStorage.getItem('lastfm.sessionKey'),
-            _token = localStorage.getItem('lastfm.token');
+        var _sessionKey, _token;
+
+        getStoredSessionKey().then(function(lastFm) {
+            if (lastFm) {
+                _sessionKey = lastFm.sessionKey;
+                _token = lastFm.token;
+            }
+        });
 
         return {
             auth: auth,
@@ -41,8 +47,8 @@
                         console.log('session key: ' + data.session.key);
                         _sessionKey = data.session.key;
                         _token = '';
-                        localStorage.setItem('lastfm.sessionKey', data.session.key);
-                        localStorage.setItem('lastfm.token', '');
+
+                        saveSessionKey({sessionKey: data.session.key, token: ''});
 
                         Messaging.sendLastFmAuthenticationMessage();
 
@@ -82,7 +88,7 @@
             }).success(function(data) {
                 if (data.token) {
                     console.log('token: ' + data.token);
-                    localStorage.setItem('lastfm.token', data.token);
+                    saveSessionKey({sessionKey: '', token: data.token});
                     _token = data.token;
                     _openLastFmAuthentication(data.token);
                 } else {
@@ -124,6 +130,36 @@
             // append secret
             return md5(o + API_SECRET);
 
+        }
+
+        function getStoredSessionKey() {
+
+            return $q(function(resolve, reject) {
+                if (SCConfiguration.isChromeApp()) {
+                    chrome.storage.local.get('lastfm', function(data) {
+                        resolve(data['lastfm']);
+                    });
+                } else {
+
+                    resolve({
+                        sessionKey: localStorage.getItem('lastfm.sessionKey'),
+                        token: localStorage.getItem('lastfm.token')
+                    });
+                }
+            })
+
+        }
+
+        function saveSessionKey(lastFm) {
+
+            if (!lastFm) return;
+
+            if (SCConfiguration.isChromeApp()) {
+                chrome.storage.local.set({'lastfm': lastFm});
+            } else {
+                localStorage.setItem('lastfm.sessionKey', lastFm.sessionKey);
+                localStorage.setItem('lastfm.token', lastFm.token);
+            }
         }
 
     };

@@ -4,10 +4,10 @@
     angular.module('soundcloudify.core')
         .directive('scdPlayer', soundCloudifyPlayerDirective);
 
-    function soundCloudifyPlayerDirective(CorePlayer, $mdDialog, GATracker) {
+    function soundCloudifyPlayerDirective(CorePlayer, $mdDialog, GATracker, SCConfiguration) {
         return {
             restrict: 'E',
-            templateUrl: 'scripts/core/views/player.html',
+            templateUrl: SCConfiguration.getDirectiveViewPath() + '/player.html',
             link: function(scope, element, attrs) {
 
                 scope.player = CorePlayer;
