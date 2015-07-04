@@ -53,7 +53,7 @@
     core.value('API_ENDPOINT', 'http://api.getsoundcloudify.com');
 
     //SoundCloud API key
-    core.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
+    core.value('CLIENT_ID', '458dac111e2456c40805cd838f4548c1');
 
     //YouTube API key
     core.value('YOUTUBE_KEY', 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4');
