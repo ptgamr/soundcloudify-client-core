@@ -4,12 +4,13 @@
     angular.module('soundcloudify.core')
         .service("Category", CategoryService);
 
-    function CategoryService($http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT, YahooProxy, SCConfiguration){
+    function CategoryService($injector, $http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT, SCConfiguration){
 
         var cachedCategory;
         var cachedRedditVideoIds = [];
         var isWeb = SCConfiguration.isWeb();
         var SOUNDCLOUD_API_V2_URL = 'https://api-v2.soundcloud.com';
+        var YahooProxy = isWeb ? $injector.get('YahooProxy') : angular.noop;
 
         return {
             getList: getList,
@@ -25,7 +26,7 @@
                     });
                 } else {
                     resolve(JSON.parse(localStorage.getItem('charts')) || []);
-                }                
+                }
             });
         }
 
@@ -42,7 +43,7 @@
             return $q(function(resolve, reject) {
 
                 getStoredCharts().then(function(data) {
-                    
+
                     cachedCategory = data;
 
                     if (cachedCategory.length) {

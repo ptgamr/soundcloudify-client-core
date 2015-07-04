@@ -6,9 +6,8 @@
 
     var DEFAULT_LIMIT = 20;
 
-
     function SearchService($http, CLIENT_ID, YOUTUBE_KEY, TrackAdapter, $q){
-        
+
         return {
             search: search,
             searchYoutube: searchYoutube
@@ -18,21 +17,8 @@
             var params = { q: term, limit: pagingObject.limit, offset: pagingObject.skip, linked_partitioning: 1, client_id: CLIENT_ID };
 
             return $q(function(resolve, reject) {
-                // $http.jsonp('https://api.soundcloud.com/tracks', {
-                //     params: params,
-                //     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                //         if (!result || !result.collection) return [];
-                //         return {
-                //             tracks: TrackAdapter.adaptMultiple(result.collection, 'sc')
-                //         };
-                //     })
-                // }).success(function(data) {
-                //     resolve(data)
-                // }).error(function() {
-                //     reject();
-                // });
                 $http({
-                    url: 'https://api.soundcloud.com/tracks',
+                    url: 'https://api-v2.soundcloud.com/search/tracks',
                     method: 'GET',
                     params: params,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
@@ -46,7 +32,7 @@
                 }).error(function() {
                     reject();
                 });
-            })
+            });
         }
 
         function searchYoutube(term, pagingObject) {
@@ -78,13 +64,14 @@
                     return item.id.videoId;
                 });
 
-                var parts = ['id', 'snippet', 'statistics', 'status'];
+                var parts = ['id', 'snippet', 'statistics', 'contentDetails', 'status'];
                 var fields = [
                     'items/id',
                     'items/snippet/title',
                     'items/snippet/thumbnails',
                     'items/statistics/viewCount',
                     'items/statistics/likeCount',
+                    'items/contentDetails/duration',
                     'items/status/embeddable'
                 ];
 
