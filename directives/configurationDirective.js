@@ -19,7 +19,7 @@
         };
     }
 
-    function ConfigurationController($window, $mdDialog, $rootScope, CorePlayer) {
+    function ConfigurationController($window, $mdDialog, $rootScope, CorePlayer, SCConfiguration) {
 
         var vm = this;
 
@@ -64,7 +64,7 @@
             $mdDialog.show({
                 parent: parentEl,
                 targetEvent: $event,
-                templateUrl: 'scripts/views/configuration.html',
+                templateUrl: SCConfiguration.getDirectiveViewPath() + '/configuration.html',
                 controller: DialogController
             });
 
@@ -97,7 +97,7 @@
             $mdDialog.show({
                 parent: parentEl,
                 targetEvent: $event,
-                templateUrl: 'scripts/views/info.html',
+                templateUrl: SCConfiguration.getDirectiveViewPath() + '/info.html',
                 controller: DialogController
             });
 

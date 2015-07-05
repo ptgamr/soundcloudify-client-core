@@ -4,45 +4,47 @@
     angular.module('soundcloudify.core')
         .factory("Messaging", MessagingService);
 
-    function MessagingService($rootScope) {
+    function MessagingService($rootScope, SCConfiguration) {
         var onTimeUpdate, onEnded, onTrackChanged, onError, lastFmInvalidHandler, lastFmScrobbledHandler;
 
-        // var port = chrome.runtime.connect({name: "soundcloudify"});
+        if (SCConfiguration.isExtension()) {
+            var port = chrome.runtime.connect({name: "soundcloudify"});
 
-        // port.onMessage.addListener(function(event) {
-        //     var data = event.data;
+            port.onMessage.addListener(function(event) {
+                var data = event.data;
 
-        //     switch(event.message) {
-        //         case 'scd.timeupdate':
-        //             if(onTimeUpdate)
-        //                 onTimeUpdate(data);
-        //             break;
-        //         case 'scd.ended':
-        //             if(onEnded)
-        //                 onEnded(data);
-        //             break;
-        //         case 'scd.trackChangedFromBackground':
-        //             if(onTrackChanged)
-        //                 onTrackChanged(data);
-        //             break;
-        //         case 'scd.error':
-        //             if(onError)
-        //                 onError();
-        //             break;
-        //         case 'lastfm.trackInvalid':
-        //             if(lastFmInvalidHandler)
-        //                 lastFmInvalidHandler();
-        //             break;
-        //         case 'lastfm.scrobbled':
-        //             $rootScope.$broadcast('lastfm.scrobbled');
-        //             if(lastFmScrobbledHandler)
-        //                 lastFmScrobbledHandler();
-        //             break;
-        //         case 'lastfm.scrobbleError':
-        //             $rootScope.$broadcast('lastfm.scrobbleError');
-        //     }
-        // });
-            
+                switch(event.message) {
+                    case 'scd.timeupdate':
+                        if(onTimeUpdate)
+                            onTimeUpdate(data);
+                        break;
+                    case 'scd.ended':
+                        if(onEnded)
+                            onEnded(data);
+                        break;
+                    case 'scd.trackChangedFromBackground':
+                        if(onTrackChanged)
+                            onTrackChanged(data);
+                        break;
+                    case 'scd.error':
+                        if(onError)
+                            onError();
+                        break;
+                    case 'lastfm.trackInvalid':
+                        if(lastFmInvalidHandler)
+                            lastFmInvalidHandler();
+                        break;
+                    case 'lastfm.scrobbled':
+                        $rootScope.$broadcast('lastfm.scrobbled');
+                        if(lastFmScrobbledHandler)
+                            lastFmScrobbledHandler();
+                        break;
+                    case 'lastfm.scrobbleError':
+                        $rootScope.$broadcast('lastfm.scrobbleError');
+                }
+            });
+        }
+
         return {
                 registerErrorHandler: registerErrorHandler,
                 registerTimeUpdateHandler: registerTimeUpdateHandler,
@@ -99,7 +101,7 @@
         }
 
         function sendPrevMessage() {
-            port.postMessage({message: 'scd.prev'}); 
+            port.postMessage({message: 'scd.prev'});
         }
 
         function sendPauseMessage() {
@@ -107,7 +109,7 @@
         }
 
         function sendClearMessage() {
-            port.postMessage({message: 'scd.clear'}); 
+            port.postMessage({message: 'scd.clear'});
         }
 
         function sendResumeMessage() {
@@ -133,6 +135,6 @@
         function sendManualScrobbleMessage() {
             port.postMessage({message: 'lastfm.manualScrobble'});
         }
-    }    
+    }
 
 }());

@@ -5,7 +5,7 @@
         .service("SuggestionService", SuggestionService);
 
     function SuggestionService($http, CLIENT_ID, TrackAdapter, $q, YOUTUBE_KEY){
-        
+
         return {
             suggest: youtubeSuggest
         };
@@ -19,7 +19,7 @@
                     type: 'video',
                     maxResults: 50,
                     part: 'snippet',
-                    fields: 'items/snippet/title', 
+                    fields: 'items/snippet/title',
                     q: term
                 };
 
@@ -51,7 +51,8 @@
             var params = { q: term, client: 'firefox', ds: 'yt'};
 
             return $q(function(resolve, reject) {
-                $http.jsonp('http://suggestqueries.google.com/complete/search?callback=JSON_CALLBACK', {
+                //$http.jsonp('http://suggestqueries.google.com/complete/search?callback=JSON_CALLBACK', {
+                $http.jsonp('https://suggestqueries.google.com/complete/search', {
                     params: params
                 }).success(function(result) {
 
