@@ -10,61 +10,27 @@
             suggest: youtubeSuggest
         };
 
-        function youtubeSearch(term) {
-
-            return $q(function(resolve, reject) {
-
-                var params = {
-                    key: YOUTUBE_KEY,
-                    type: 'video',
-                    maxResults: 50,
-                    part: 'snippet',
-                    fields: 'items/snippet/title',
-                    q: term
-                };
-
-                $http({
-                    url: 'https://www.googleapis.com/youtube/v3/search',
-                    method: 'GET',
-                    params: params,
-                    transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                        if (!result || !result.items) return [];
-
-                        return result.items.map(function(video) {
-                            return {
-                                value: video.snippet.title,
-                                display: video.snippet.title
-                            };
-                        });
-                    })
-                }).success(function(data) {
-                    resolve(data);
-                }).error(function() {
-                    reject();
-                });
-            });
-
-        }
-
         function youtubeSuggest(term) {
 
             var params = { q: term, client: 'firefox', ds: 'yt'};
 
             return $q(function(resolve, reject) {
-                //$http.jsonp('http://suggestqueries.google.com/complete/search?callback=JSON_CALLBACK', {
-                $http.jsonp('https://suggestqueries.google.com/complete/search', {
-                    params: params
-                }).success(function(result) {
+                $http({
+                    url: 'http://suggestqueries.google.com/complete/search',
+                    method: 'GET',
+                    params: params,
+                    transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
 
-                    if (!result || !result[1]) resolve([]);
-                    var suggestions = result[1].map(function(suggestion) {
-                        return {
-                            value: suggestion,
-                            display: suggestion
-                        };
+                        if (!result || !result[1]) return [];
+                        return result[1].map(function(suggestion) {
+                            return {
+                                value: suggestion,
+                                display: suggestion
+                            };
+                        })
                     })
-
-                    resolve(suggestions)
+                }).success(function(data) {
+                    resolve(data)
                 }).error(function() {
                     reject();
                 });

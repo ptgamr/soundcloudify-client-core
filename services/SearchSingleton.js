@@ -12,7 +12,7 @@
         vm.search = {
             term: ''
         };
-        
+
         vm.showSuggestion = true;
 
         vm.recentSearch = JSON.parse(localStorage.getItem('recentSearch')) || [];
@@ -57,7 +57,9 @@
 
         vm.getMore = function(newSearch) {
 
-            if (newSearch && (!vm.search.term || vm.search.term === lastSearchTerm)) return;
+            //if (newSearch && (!vm.search.term || vm.search.term === lastSearchTerm)) return;
+
+            if (!vm.selectedItem || vm.selectedItem.value === '') return;
 
             var tempRecentSearch = angular.copy(vm.recentSearch);
 
@@ -68,14 +70,14 @@
                 vm.soundcloudPaginator.reset();
                 vm.youtubePaginator.reset();
 
-                tempRecentSearch.unshift(vm.search.term.trim());
+                tempRecentSearch.unshift(vm.selectedItem.value.trim());
                 vm.recentSearch = _.uniq(tempRecentSearch).slice(0,5);
                 localStorage.setItem('recentSearch', JSON.stringify(vm.recentSearch));
 
-                GATracker.trackSearch('new search', vm.search.term);
-                lastSearchTerm = vm.search.term;
+                GATracker.trackSearch('new search', vm.selectedItem.value);
+                lastSearchTerm = vm.selectedItem.value;
             } else {
-                GATracker.trackSearch('get more', vm.search.term);
+                GATracker.trackSearch('get more', vm.selectedItem.value);
             }
 
             vm.soundcloudPaginator.moreRows();
@@ -83,7 +85,7 @@
 
             vm.promises = [vm.soundcloudPaginator.lastPromise, vm.youtubePaginator.lastPromise];
 
-            
+
         };
 
         vm.hasMoreRow = function() {
