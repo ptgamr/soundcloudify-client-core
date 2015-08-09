@@ -27,6 +27,12 @@
         scrobbled: false,
         lastFmInvalid: false
     };
+    
+    //use a getter to return new copy of object, to avoid altering reference to DEFAULT_STATE as state changes
+    
+    function getDefaultState(){
+        return angular.copy(DEFAULT_STATE);
+    }
 
     function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, StorageService, SCConfiguration){
 
@@ -40,7 +46,7 @@
         var nowplaying = {
             trackIds: []
         };
-        var state = DEFAULT_STATE;
+        var state = getDefaultState();
 
         if (isExtension) {
             state = backgroundPage.mainPlayer.state;
@@ -49,7 +55,7 @@
                 state = data['playerstate']
             });
         } else {
-            state = JSON.parse(localStorage.getItem('playerstate')) || DEFAULT_STATE;
+            state = JSON.parse(localStorage.getItem('playerstate')) || getDefaultState();
         }
 
         //Storage API for simplify IndexedDB interaction
