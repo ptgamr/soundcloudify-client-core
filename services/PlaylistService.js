@@ -1,8 +1,17 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .service("PlaylistService", PlaylistService);
+    try{
+        angular.module('soundcloudify.core')
+            .service("PlaylistService", PlaylistService);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .service("PlaylistService", PlaylistService);
+    }
+    catch (err){ /*ignore*/ }
 
     function Playlist(name, tracks) {
         if (!name)
@@ -54,10 +63,11 @@
         }
 
         function getFromStorage() {
-
+            console.log("pulling from storage");
             Storage.getAllPlaylists()
                     .then(function(playlists) {
                         playlistStore.items = playlists || [];
+                        //ContextMenuService.updateMenuPlaylists(playlistStore);
                     });
         }
 
