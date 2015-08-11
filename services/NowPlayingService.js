@@ -8,8 +8,18 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .service("NowPlaying", NowPlayingService);
+    try{
+        angular.module('soundcloudify.core')
+            .service("NowPlaying", NowPlayingService);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .service("NowPlaying", NowPlayingService);
+    }
+    catch (err){ /*ignore*/ }
+        
 
     var ORIGIN_LOCAL = 'l';
     var ORIGIN_SERVER = 's';

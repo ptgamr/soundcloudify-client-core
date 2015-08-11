@@ -1,9 +1,17 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
+    try{
+        angular.module('soundcloudify.core')
          .service("StorageService", StorageService);
+    }
+    catch (err){ /*ignore*/ }
 
+    try{
+        angular.module('soundcloudify.background')
+            .service("StorageService", StorageService);
+    }
+    catch (err){ /*ignore*/ }
 
     function StorageService($q, $indexedDB) {
 

@@ -1,8 +1,17 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .factory("Messaging", MessagingService);
+    try{
+        angular.module('soundcloudify.core')
+            .factory("Messaging", MessagingService);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .factory("Messaging", MessagingService);
+    }
+    catch (err){ /*ignore*/ }
 
     function MessagingService($rootScope, SCConfiguration) {
         var onTimeUpdate, onEnded, onTrackChanged, onError, lastFmInvalidHandler, lastFmScrobbledHandler;

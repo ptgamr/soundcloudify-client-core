@@ -1,8 +1,17 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .service("TrackAdapter", TrackAdapter);
+    try{
+        angular.module('soundcloudify.core')
+            .service("TrackAdapter", TrackAdapter);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .service("TrackAdapter", TrackAdapter);
+    }
+    catch (err){ /*ignore*/ }
 
     function TrackAdapter (StarService) {
 

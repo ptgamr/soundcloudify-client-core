@@ -1,8 +1,18 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .service("GATracker", GoogleAnalyticService);
+    try{
+        angular.module('soundcloudify.core')
+            .service("GATracker", GoogleAnalyticService);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .service("GATracker", GoogleAnalyticService);
+    }
+    catch (err){ /*ignore*/ }
+        
 
     function GoogleAnalyticService($window){
         return {

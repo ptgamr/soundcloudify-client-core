@@ -1,8 +1,17 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .service("SearchService", SearchService);
+    try{
+        angular.module('soundcloudify.core')
+            .service("SearchService", SearchService);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .service("SearchService", SearchService);
+    }
+    catch (err){ /*ignore*/ }
 
     var DEFAULT_LIMIT = 20;
 

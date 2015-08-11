@@ -2,7 +2,17 @@
 
     'use strict';
 
-    angular.module('soundcloudify.core').provider('SCConfiguration', SCConfigurationProvider);
+    try{
+        angular.module('soundcloudify.core')
+            .provider('SCConfiguration', SCConfigurationProvider);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .provider('SCConfiguration', SCConfigurationProvider);
+    }
+    catch (err){ /*ignore*/ }
 
     function SCConfigurationProvider() {
 

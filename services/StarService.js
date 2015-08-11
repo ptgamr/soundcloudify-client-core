@@ -1,8 +1,17 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .service("StarService", StarService);
+    try{
+        angular.module('soundcloudify.core')
+            .service("StarService", StarService);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .service("StarService", StarService);
+    }
+    catch (err){ /*ignore*/ }
 
     function StarService($rootScope, $http, API_ENDPOINT, $log, StorageService) {
 

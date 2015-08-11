@@ -1,8 +1,17 @@
 (function(){
     'use strict';
 
-    angular.module('soundcloudify.core')
-        .service("LastFMAuthentication", LastFMAuthentication);
+    try{
+        angular.module('soundcloudify.core')
+            .service("LastFMAuthentication", LastFMAuthentication);
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        angular.module('soundcloudify.background')
+            .service("LastFMAuthentication", LastFMAuthentication);
+    }
+    catch (err){ /*ignore*/ }
 
     function LastFMAuthentication($http, $q, Messaging, SCConfiguration){
 
