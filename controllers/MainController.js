@@ -1,5 +1,9 @@
 (function() {
 
+    'use strict';
+    
+    angular.module('soundcloudify.core').controller('MainController', ['$http', '$location', 'CLIENT_ID', MainController]);
+
     function MainController($http, $location, CLIENT_ID) {
 
         var self = this;
@@ -11,11 +15,11 @@
 
             $http.get('https://api-v2.soundcloud.com/explore/categories', { params: params })
                 .success(function(data){
-                    self.categories = data['music'];
+                    self.categories = data.music;
                     self.selectedCategory = self.categories[0];
                     self.isLoading = false;
                 });
-        }
+        };
 
         this.start = function() {
             $location.path('/playlist/' + self.selectedCategory);
@@ -23,7 +27,4 @@
 
         this.getCategories();
     }
-
-    soundCloudify = angular.module('soundcloudify.core');
-    soundCloudify.controller('MainController', ['$http', '$location', 'CLIENT_ID', MainController]);
 }());

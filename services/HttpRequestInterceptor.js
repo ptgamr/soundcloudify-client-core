@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("HttpRequestInterceptor", HttpRequestInterceptor);
+        .service('HttpRequestInterceptor', HttpRequestInterceptor);
 
     function HttpRequestInterceptor($injector){
 
@@ -15,20 +15,20 @@
                 user = data.identity;
             }
         });
-    
-        var user;
 
         return {
             request: function($config) {
 
-                if (!user) return $config;
+                if (!user) {
+                  return $config;
+                }
 
                 if($config && $config.url && $config.url.indexOf(API_ENDPOINT) === 0) {
-                    $config.headers['uid'] = user.id;
+                    $config.headers.uid = user.id;
                 }
                 return $config;
             }
         };
-    };
+    }
 
 }());

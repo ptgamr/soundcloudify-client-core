@@ -2,42 +2,48 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .factory("Messaging", MessagingService);
+        .factory('Messaging', MessagingService);
 
     function MessagingService($rootScope, SCConfiguration) {
         var onTimeUpdate, onEnded, onTrackChanged, onError, lastFmInvalidHandler, lastFmScrobbledHandler;
 
         if (SCConfiguration.isExtension()) {
-            var port = chrome.runtime.connect({name: "soundcloudify"});
+            var port = chrome.runtime.connect({name: 'soundcloudify'});
 
             port.onMessage.addListener(function(event) {
                 var data = event.data;
 
                 switch(event.message) {
                     case 'scd.timeupdate':
-                        if(onTimeUpdate)
+                        if(onTimeUpdate) {
                             onTimeUpdate(data);
+                        }
                         break;
                     case 'scd.ended':
-                        if(onEnded)
+                        if(onEnded) {
                             onEnded(data);
+                        }
                         break;
                     case 'scd.trackChangedFromBackground':
-                        if(onTrackChanged)
+                        if(onTrackChanged) {
                             onTrackChanged(data);
+                        }
                         break;
                     case 'scd.error':
-                        if(onError)
+                        if(onError) {
                             onError();
+                        }
                         break;
                     case 'lastfm.trackInvalid':
-                        if(lastFmInvalidHandler)
+                        if(lastFmInvalidHandler) {
                             lastFmInvalidHandler();
+                        }
                         break;
                     case 'lastfm.scrobbled':
                         $rootScope.$broadcast('lastfm.scrobbled');
-                        if(lastFmScrobbledHandler)
+                        if(lastFmScrobbledHandler) {
                             lastFmScrobbledHandler();
+                        }
                         break;
                     case 'lastfm.scrobbleError':
                         $rootScope.$broadcast('lastfm.scrobbleError');

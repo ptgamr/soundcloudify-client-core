@@ -1,13 +1,15 @@
+/*globals ServiceHelpers*/
+
 (function(){
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("YahooProxy", YahooProxy);
+        .service('YahooProxy', YahooProxy);
 
     function YahooProxy($http, $q){
 
         var YAHOO_QUERY_URL = 'http://query.yahooapis.com/v1/public/yql';
-        
+
         return {
             request: request
         };
@@ -17,10 +19,10 @@
                 url: YAHOO_QUERY_URL,
                 method: 'GET',
                 params: {
-                    q: 'select * from json where url="' + url + '"',
+                    q: 'select * from json where url=\'' + url + '\'',
                     format: 'json'
                 },
-            }
+            };
 
             params.transformResponse = ServiceHelpers.appendTransform($http.defaults.transformResponse, function(response) {
                 var data;
@@ -43,6 +45,6 @@
                 });
             });
         }
-    };
+    }
 
 }());

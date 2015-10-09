@@ -1,14 +1,18 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
-            .controller('PlaylistViewController', PlaylistViewController)
+            .controller('PlaylistViewController', PlaylistViewController);
 
     function PlaylistViewController($state, $scope, $stateParams, PlaylistService, StarService, CorePlayer, GATracker) {
         var vm = this;
 
         vm.playlistIndex = $stateParams.playlistIndex;
 
-        if (!vm.playlistIndex) throw new Error('PlaylistViewController: playlistIndex is undefined');
+        if (!vm.playlistIndex) {
+            throw new Error('PlaylistViewController: playlistIndex is undefined');
+        }
 
         if (vm.playlistIndex >= 0) {
             vm.listcontext = 'playlist';
@@ -28,7 +32,9 @@
         }
 
 
-		if (!vm.playlist) throw new Error('PlaylistViewController: playlist not found at index = ' + vm.playlistIndex);        
+		if (!vm.playlist) {
+            throw new Error('PlaylistViewController: playlist not found at index = ' + vm.playlistIndex);
+        }
 
 		vm.backToPlaylist = function() {
             $state.go('playlist.list');
@@ -42,7 +48,7 @@
 
             CorePlayer.playAll(vm.playlistTracks);
 
-            GATracker.trackPlaylist('play all in detail view', playlistIndex);
+            GATracker.trackPlaylist('play all in detail view', vm.playlistIndex);
         });
     }
 

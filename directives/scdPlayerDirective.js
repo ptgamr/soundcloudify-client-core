@@ -8,7 +8,7 @@
         return {
             restrict: 'E',
             templateUrl: SCConfiguration.getDirectiveViewPath() + '/player.html',
-            link: function(scope, element, attrs) {
+            link: function(scope) {
 
                 scope.player = CorePlayer;
                 scope.volume = scope.player.state.volume * 100;
@@ -29,7 +29,7 @@
                     });
 
                     function DialogController(scope, $mdDialog, CorePlayer, GATracker) {
-                        
+
                         scope.close = function() {
                             $mdDialog.hide();
                         };
@@ -61,14 +61,14 @@
                 };
 
                 scope.getScrobbleTitle = function() {
-                    return CorePlayer.state.scrobble ? 
+                    return CorePlayer.state.scrobble ?
                             (
                                 CorePlayer.state.currentTrack.lastFmValidate === false ?
-                                    'track unregconized by last.fm, right click to edit' : 
+                                    'track unregconized by last.fm, right click to edit' :
                                     CorePlayer.state.currentTrack.scrobbled ?
                                         'track has been scrobbled' :
                                         'last.fm scrobble'
-                            ) : 'last.fm scrobble'
+                            ) : 'last.fm scrobble';
                 };
 
                 scope.$watch('volume', function(val) {

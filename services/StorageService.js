@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-         .service("StorageService", StorageService);
+         .service('StorageService', StorageService);
 
 
     function StorageService($q, $indexedDB) {
@@ -46,7 +46,7 @@
                 });
             },
             getAllPlaylists: function() {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('playlist', function(store) {
                         var query = store.query();
                         query.$index('deleted');
@@ -58,7 +58,7 @@
                 });
             },
             getUnsyncedPlaylists: function() {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('playlist', function(store) {
                         store.getAll().then(function(playlists) {
                             resolve(playlists);
@@ -86,7 +86,7 @@
                 });
             },
             insert: function (tracks) {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('nowplaying', function(store) {
                         if (Array.isArray(tracks)) {
                             _.each(tracks, function(track) {
@@ -117,7 +117,7 @@
                 });
             },
             getTracks: function() {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('nowplaying', function(store) {
                         var query = store.query();
                         query.$index('deleted');
@@ -129,7 +129,7 @@
                 });
             },
             getById: function(trackId) {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('nowplaying', function(store) {
                         store.find(trackId).then(function(track) {
                             resolve(track);
@@ -138,8 +138,7 @@
                 });
             },
             increaseOrder: function(trackIds) {
-                var self = this;
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('nowplaying', function(store) {
                         _.each(trackIds, function(trackId) {
                             store.find(trackId).then(function(track) {
@@ -152,7 +151,7 @@
                 });
             },
             getUnsyncedTracks: function() {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('nowplaying', function(store) {
                         var query = store.query();
                         query.$index('sync');
@@ -205,7 +204,7 @@
                 });
             },
             getById: function(trackId) {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('starred', function(store) {
                         store.find(trackId).then(function(track) {
                             resolve(track);
@@ -214,7 +213,7 @@
                 });
             },
             getTracks: function() {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('starred', function(store) {
                         var query = store.query();
                         query.$index('deleted');
@@ -226,7 +225,7 @@
                 });
             },
             getUnsyncedTracks: function() {
-                return $q(function(resolve, reject) {
+                return $q(function(resolve) {
                     $indexedDB.openStore('starred', function(store) {
                         var query = store.query();
                         query.$index('sync');
@@ -241,7 +240,7 @@
 
         return {
             getStorageInstance: getStorageInstance
-        }
+        };
 
         function getStorageInstance(storage) {
             switch(storage) {

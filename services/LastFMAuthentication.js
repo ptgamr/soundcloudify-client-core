@@ -1,8 +1,9 @@
+/* globals md5*/
 (function(){
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("LastFMAuthentication", LastFMAuthentication);
+        .service('LastFMAuthentication', LastFMAuthentication);
 
     function LastFMAuthentication($http, $q, Messaging, SCConfiguration){
 
@@ -52,11 +53,13 @@
 
                         Messaging.sendLastFmAuthenticationMessage();
 
-                        if (onAuthenticationSuccess) onAuthenticationSuccess.apply();
+                        if (onAuthenticationSuccess) {
+                          onAuthenticationSuccess.apply();
+                        }
                     } else {
                         if (data.error === 4) { //Invalid authentication token supplied
-                            _requestToken();            
-                        } else if (data.error = 14) { //This token has not been authorized
+                            _requestToken();
+                        } else if (data.error === 14) { //This token has not been authorized
                             _openLastFmAuthentication(_token);
                         }
                     }
@@ -120,7 +123,7 @@
             keys.sort();
 
             for (var i = 0; i < keys.length; i++) {
-                if (keys[i] == 'format' || keys[i] == 'callback') {
+                if (keys[i] === 'format' || keys[i] === 'callback') {
                     continue;
                 }
 
@@ -134,10 +137,10 @@
 
         function getStoredSessionKey() {
 
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
                 if (SCConfiguration.isChromeApp()) {
                     chrome.storage.local.get('lastfm', function(data) {
-                        resolve(data['lastfm']);
+                        resolve(data.lastfm);
                     });
                 } else {
 
@@ -146,13 +149,15 @@
                         token: localStorage.getItem('lastfm.token')
                     });
                 }
-            })
+            });
 
         }
 
         function saveSessionKey(lastFm) {
 
-            if (!lastFm) return;
+            if (!lastFm) {
+              return;
+            }
 
             if (SCConfiguration.isChromeApp()) {
                 chrome.storage.local.set({'lastfm': lastFm});
@@ -161,7 +166,6 @@
                 localStorage.setItem('lastfm.token', lastFm.token);
             }
         }
-
-    };
+    }
 
 }());

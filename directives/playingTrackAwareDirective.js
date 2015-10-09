@@ -29,7 +29,7 @@
                 }, true);
 
 
-                $scope.$watch('player.state.playing', function(status) {
+                $scope.$watch('player.state.playing', function() {
                     updateActiveTrack();
                 }, true);
 
@@ -38,12 +38,14 @@
                     var track = CorePlayer.state.currentTrack;
                     var index = CorePlayer.state.currentIndex;
 
-                    if (!track) return;
+                    if (!track) {
+                        return;
+                    }
 
                     angular.element($element[0].querySelector('.playing, .pause')).removeClass('playing pause');
 
                     var cssClass = 'playing';
-                    
+
                     if (!CorePlayer.state.playing) {
                         cssClass = 'pause';
                     }
@@ -56,5 +58,5 @@
                 }
             }
         };
-    };
+    }
 }());

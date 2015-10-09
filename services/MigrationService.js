@@ -16,7 +16,7 @@
          * - nowplaying
          * - playlist
          * - starred
-         * 
+         *
          */
         function migrate() {
             migrateNowPlaying();
@@ -25,7 +25,7 @@
 
         function migratePlaylist() {
             chrome.storage.local.get('playlist', function(data) {
-                var playlists = data['playlist'] || [];
+                var playlists = data.playlist || [];
 
                 if (playlists.length) {
                     _.each(playlists, function(playlist, index) {
@@ -50,7 +50,7 @@
         function migrateNowPlaying() {
             chrome.storage.local.get('nowPlaying', function(data) {
 
-                var tracks = data['nowPlaying'] || [];
+                var tracks = data.nowPlaying || [];
 
                 if(tracks.length) {
                     NowPlaying.addTracks(tracks);
@@ -61,5 +61,5 @@
                 }
             });
         }
-    };
+    }
 }(angular));

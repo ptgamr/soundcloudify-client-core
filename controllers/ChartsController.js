@@ -1,5 +1,7 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
             .controller('ChartsController', ChartsController)
 
@@ -20,10 +22,10 @@
 
         vm.selectReddit = function() {
             $state.go('charts.detail', {category: 'reddit'});
-        }
+        };
 
         vm.sanitizeCategory = function(category) {
-            return unescape(category).replace(/\+/g, " ");
+            return unescape(category).replace(/\+/g, ' ');
         };
     }
 }());

@@ -17,7 +17,7 @@
                 initParams($scope);
             }
         };
-    };
+    }
 
     var commonModule = angular.module('soundcloudify.core');
     commonModule.directive('loading', loadingDirective);

@@ -1,8 +1,10 @@
+/* globals ServiceHelpers*/
+
 (function(){
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("Category", CategoryService);
+        .service('Category', CategoryService);
 
     function CategoryService($injector, $http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT, SCConfiguration){
 
@@ -19,10 +21,10 @@
         };
 
         function getStoredCharts() {
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
                 if (SCConfiguration.isChromeApp()) {
                     chrome.storage.local.get('activeTab', function(data) {
-                        resolve(data['charts'] || []);
+                        resolve(data.charts || []);
                     });
                 } else {
                     resolve(JSON.parse(localStorage.getItem('charts')) || []);
@@ -40,7 +42,7 @@
 
         function getList(){
 
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
 
                 getStoredCharts().then(function(data) {
 
@@ -53,12 +55,12 @@
                         if (isWeb) {
 
                             var soundcloudParams = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
-                            var soundcloudUrl = window.ServiceHelpers.buildUrl(SOUNDCLOUD_API_V2_URL + '/explore/categories', soundcloudParams)
+                            var soundcloudUrl = window.ServiceHelpers.buildUrl(SOUNDCLOUD_API_V2_URL + '/explore/categories', soundcloudParams);
 
                             YahooProxy
                                 .request(soundcloudUrl)
                                 .then(function(data) {
-                                    cachedCategory = data['music'] || [];
+                                    cachedCategory = data.music || [];
                                     resolve(cachedCategory);
                                     saveCharts(cachedCategory);
                                 });
@@ -67,7 +69,7 @@
                             var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
                             $http.get(SOUNDCLOUD_API_V2_URL + '/explore/categories', { params: params })
                             .success(function(data) {
-                                cachedCategory = data['music'] || [];
+                                cachedCategory = data.music || [];
                                 resolve(cachedCategory);
                                 saveCharts(cachedCategory);
                             });
@@ -85,7 +87,9 @@
                 var soundcloudUrl = window.ServiceHelpers.buildUrl(SOUNDCLOUD_API_V2_URL + '/explore/' + category, soundcloudParams);
 
                 var customTransform = function(result) {
-                    if (!result || !result.tracks) return [];
+                    if (!result || !result.tracks) {
+                      return [];
+                    }
                     return {
                         tracks: TrackAdapter.adaptMultiple(result.tracks, 'sc')
                     };
@@ -101,7 +105,9 @@
                         method: 'GET',
                         params: params,
                         transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                            if (!result || !result.tracks) return [];
+                            if (!result || !result.tracks) {
+                              return [];
+                            }
                             return {
                                 tracks: TrackAdapter.adaptMultiple(result.tracks, 'sc')
                             };
@@ -132,7 +138,7 @@
 
                     }).error(function() {
                         reject();
-                    })
+                    });
                 } else {
 
                     var pagingVideoIds = angular.copy(cachedRedditVideoIds).splice(pagingObject.skip, pagingObject.limit);
@@ -169,10 +175,12 @@
                 method: 'GET',
                 params: requestParam,
                 transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                    if (!result || !result.items) return [];
+                    if (!result || !result.items) {
+                      return [];
+                    }
                     return {
                         tracks: TrackAdapter.adaptMultiple(result.items, 'yt')
-                    }
+                    };
                 })
             }).success(function(data) {
                 resolve(data);
@@ -181,6 +189,6 @@
             });
 
         }
-    };
+    }
 
 }());

@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("GATracker", GoogleAnalyticService);
+        .service('GATracker', GoogleAnalyticService);
 
     function GoogleAnalyticService($window){
         return {
@@ -46,7 +46,7 @@
             if (!$window.ga) {
                 return;
             }
-            $window.ga('send', 'event', 'playlist', action, label, value);   
+            $window.ga('send', 'event', 'playlist', action, label, value);
         }
 
         function trackCustomEvent(category, action, label, value) {
@@ -55,6 +55,6 @@
             }
             $window.ga('send', 'event', category, action, label, value);
         }
-    };
+    }
 
 }());

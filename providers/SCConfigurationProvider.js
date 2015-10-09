@@ -11,11 +11,11 @@
 
         this.configureClient = function(_client_) {
             client = _client_;
-        }
+        };
 
         this.configureDirectiveViewPath = function(path) {
             directiveViewPath = path;
-        }
+        };
 
         this.$get = $get;
 
@@ -39,7 +39,7 @@
                 isChromeApp: function() {
                     return client === 'chromeapp';
                 }
-            }
+            };
         }
     }
 

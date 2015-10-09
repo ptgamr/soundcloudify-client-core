@@ -1,5 +1,7 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
             .filter('translate', translateFilter);
 

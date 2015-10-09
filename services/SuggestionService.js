@@ -1,10 +1,12 @@
+/*globals ServiceHelpers*/
+
 (function(){
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("SuggestionService", SuggestionService);
+        .service('SuggestionService', SuggestionService);
 
-    function SuggestionService($http, CLIENT_ID, TrackAdapter, $q, YOUTUBE_KEY){
+    function SuggestionService($http, CLIENT_ID, TrackAdapter, $q){
 
         return {
             suggest: youtubeSuggest
@@ -21,16 +23,18 @@
                     params: params,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
 
-                        if (!result || !result[1]) return [];
+                        if (!result || !result[1]) {
+                            return [];
+                        }
                         return result[1].map(function(suggestion) {
                             return {
                                 value: suggestion,
                                 display: suggestion
                             };
-                        })
+                        });
                     })
                 }).success(function(data) {
-                    resolve(data)
+                    resolve(data);
                 }).error(function() {
                     reject();
                 });
@@ -46,24 +50,25 @@
                     method: 'GET',
                     params: params,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                        if (!result || !result.suggestions) return [];
-
+                        if (!result || !result.suggestions) {
+                            return [];
+                        }
 
                         return result.suggestions.map(function(suggestion) {
                             return {
                                 value: suggestion.query.toLowerCase(),
                                 display: suggestion.query
                             };
-                        })
+                        });
                     })
                 }).success(function(data) {
-                    resolve(data)
+                    resolve(data);
                 }).error(function() {
                     reject();
                 });
             });
         }
 
-    };
+    }
 
 }());

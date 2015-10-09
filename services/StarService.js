@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("StarService", StarService);
+        .service('StarService', StarService);
 
     function StarService($rootScope, $http, API_ENDPOINT, $log, StorageService) {
 
@@ -41,7 +41,7 @@
                     trackIds = _.map(tracks, function(track) { return track.id; });
                     $rootScope.$broadcast('starredList.ready');
                 });
-        };
+        }
 
         function getTracks() {
             return Storage.getTracks();
@@ -73,8 +73,8 @@
                 }).success(function(data) {
                     if (data[0] && data[0][0]) {
                         $log.info('star track success');
-                        track.internalId = data[0][0]['internalId'];
-                        track.order = data[0][0]['order'];
+                        track.internalId = data[0][0].internalId;
+                        track.order = data[0][0].order;
                         track.sync = 1;
                         Storage.upsert(track);
                     } else {
@@ -109,7 +109,7 @@
                                     added: [],
                                     removed: [starredTrack.internalId]
                                 }
-                            }).success(function(data) {
+                            }).success(function() {
                                 $log.error('star track success');
                                 Storage.delete(starredTrack.id);
                             }).error(function() {

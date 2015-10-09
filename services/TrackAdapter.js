@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("TrackAdapter", TrackAdapter);
+        .service('TrackAdapter', TrackAdapter);
 
     function TrackAdapter (StarService) {
 
@@ -31,7 +31,7 @@
 
             if (!track) {
                 throw new Error('Can not adapt null');
-            };
+            }
 
             var normalizedTrack = {};
 
@@ -70,8 +70,9 @@
 
         function adaptMultiple(tracks, origin) {
             return _.filter(_.map(tracks, function(track) {
-                if (track)
+                if (track) {
                     return adapt(track, origin);
+                }
             }), function(track) {
                 return track !== null && typeof track !== 'undefined';
             });
@@ -111,6 +112,6 @@
                 return 0;
             }
         }
-    };
+    }
 
 }());

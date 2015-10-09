@@ -1,14 +1,18 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
-            .controller('ChartsViewController', ChartsViewController)
+            .controller('ChartsViewController', ChartsViewController);
 
     function ChartsViewController($scope, Category, $state, $stateParams, CorePlayer, Paginator, $mdToast, GATracker, SCConfiguration) {
         var vm = this;
         var DEFAULT_ARTWORK = 'images/artwork-default.jpg';
         vm.category = $stateParams.category;
 
-        if (!vm.category) throw new Error('ChartsViewController: category is undefined');
+        if (!vm.category) {
+            throw new Error('ChartsViewController: category is undefined');
+        }
 
         vm.fallbackArtwork = SCConfiguration.isExtension() ? chrome.extension.getURL(DEFAULT_ARTWORK) : DEFAULT_ARTWORK;
         vm.tracks = [];

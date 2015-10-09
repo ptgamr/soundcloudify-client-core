@@ -1,12 +1,16 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
             .filter('scArtwork', scArtworkFilter);
 
     function scArtworkFilter() {
         return function(value) {
 
-            if (!value) return 'images/artwork-default.jpg';
+            if (!value) {
+                return 'images/artwork-default.jpg';
+            }
 
             if (value.indexOf('-large') !== -1) {
                 return value.replace('-large.', '-t250x250.');

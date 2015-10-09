@@ -10,7 +10,7 @@
             restrict: 'E',
             templateUrl: SCConfiguration.getDirectiveViewPath() + '/playlist-menu.html',
             controller: function($scope, PlaylistService) {
-                
+
                 $scope.playlists = PlaylistService.getList();
 
                 $scope.newPlaylistName = '';
@@ -21,8 +21,10 @@
                         return;
                     }
 
-                    if (!$scope.newPlaylistName) return;
-                    
+                    if (!$scope.newPlaylistName) {
+                        return;
+                    }
+
                     PlaylistService.newPlaylist($scope.newPlaylistName);
 
                     $scope.newPlaylistName = '';
@@ -88,7 +90,7 @@
         }
 
         function openMenu(trackToAdd) {
-            
+
             backdrop = angular.element('<md-backdrop class="md-dialog-backdrop md-opaque md-default-theme">');
             angular.element(document).find('body').append(backdrop);
 
@@ -171,7 +173,7 @@
     }
 
     function playlistChoserDirective($rootScope, $document, $animate) {
-        
+
         var singletonMenu;
 
         return {
@@ -179,7 +181,7 @@
             scope: {
                 trackToAdd: '='
             },
-            link: function($scope, element, attrs) {
+            link: function($scope, element) {
 
                 if (!singletonMenu) {
                     singletonMenu = angular.element(document.getElementById('singleton-playlist-menu'));
@@ -209,7 +211,7 @@
 
 
                 function openMenu(event) {
-                    
+
                     backdrop = angular.element('<md-backdrop class="md-dialog-backdrop md-opaque md-default-theme">');
                     angular.element(document).find('body').append(backdrop);
 

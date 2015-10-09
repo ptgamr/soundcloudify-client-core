@@ -1,11 +1,13 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
-            .controller('DiscoveryController', DiscoveryController)
+            .controller('DiscoveryController', DiscoveryController);
 
     function DiscoveryController($scope, $q, $mdSidenav, $state, $timeout, SCConfiguration) {
         var vm = this;
-        
+
         var states = ['nowPlaying', 'search', 'playlist.list', 'charts.list'];
 
         getActiveTab().then(function(activeTab) {
@@ -20,10 +22,10 @@
         };
 
         function getActiveTab() {
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
                 if (SCConfiguration.isChromeApp()) {
                     chrome.storage.local.get('activeTab', function(data) {
-                        resolve(data['activeTab']);
+                        resolve(data.activeTab);
                     });
                 } else {
                     resolve(parseInt(localStorage.getItem('activeTab')));

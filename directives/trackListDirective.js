@@ -6,8 +6,8 @@
         .directive('trackList', trackListDirective);
 
     function trackListReactDirective(reactDirective) {
-        return reactDirective('TrackList')
-    };
+        return reactDirective('TrackList');
+    }
 
     function trackListDirective($playlistMenu, CorePlayer, PlaylistService, NowPlaying, StarService, $mdToast, GATracker, SCConfiguration) {
         return {
@@ -20,7 +20,7 @@
                 listContext: '@',
                 listIndex: '@'
             },
-            link: function($scope, element, attrs) {
+            link: function($scope, element) {
 
                 /*
                  * onTrackClick can be 'playpause || queue || playnow';

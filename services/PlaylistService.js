@@ -2,11 +2,12 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("PlaylistService", PlaylistService);
+        .service('PlaylistService', PlaylistService);
 
     function Playlist(name, tracks) {
-        if (!name)
+        if (!name) {
             throw new Error('You have to specify a name when create a playlist');
+        }
 
         this.tracks = tracks || [];
         this.name = name;
@@ -16,8 +17,6 @@
     }
 
     function PlaylistService($rootScope, $log, $q, $http, API_ENDPOINT, StorageService){
-
-        var PLAYLIST_ENDPOINT = API_ENDPOINT + '/playlist';
 
         //Storage API for simplify IndexedDB interaction
         var Storage = StorageService.getStorageInstance('playlist');
@@ -67,7 +66,7 @@
 
         function newPlaylist(name, tracks) {
 
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
 
                 tracks = tracks || [];
 
@@ -84,8 +83,9 @@
                         data: playlist,
                     }).success(function(response) {
                         if (response.playlist) {
+
                             var localPlaylistIndex = _.findIndex(playlistStore.items, function(playlist) {
-                                return playlist.uuid = response.playlist.uuid;
+                                return playlist.uuid === response.playlist.uuid;
                             });
 
                             playlistStore.items[localPlaylistIndex] = response.playlist;
@@ -103,11 +103,15 @@
         }
 
         function removePlaylist(index) {
-            if (typeof index === 'undefined' || isNaN(index))
-                    throw new Error('Error when remove playlist: index must be specified as number');
+            if (typeof index === 'undefined' || isNaN(index)) {
+                throw new Error('Error when remove playlist: index must be specified as number');
+            }
+
             var playlist = getPlaylist(index);
 
-            if (!playlist) return;
+            if (!playlist) {
+                return;
+            }
 
             playlist.deleted = 1;
             playlist.sync = 0;
@@ -129,8 +133,9 @@
         }
 
         function getPlaylist(index) {
-            if (typeof index === 'undefined' || isNaN(index))
-                    throw new Error('Error when remove playlist: index must be specified as number');
+            if (typeof index === 'undefined' || isNaN(index)) {
+                throw new Error('Error when remove playlist: index must be specified as number');
+            }
 
             return playlistStore.items[index];
         }
@@ -139,8 +144,9 @@
 
             var playlist = playlistStore.items[index];
 
-            if(!playlist)
+            if(!playlist) {
                 throw new Error('Error when adding track: Playlist not found.');
+            }
 
             var copy = angular.copy(track);
             copy.internalId = '';
@@ -159,7 +165,7 @@
                     $log.info('add track success');
                     if (data[0] && data[0][0]) {
                         //have to update internalId - just in case user delete the song immediately
-                        copy.internalId = data[0][0]['internalId'];
+                        copy.internalId = data[0][0].internalId;
                         Storage.upsert(playlist);
                     }
                 }).error(function() {
@@ -170,13 +176,15 @@
 
         function removeTrackFromPlaylist(trackIndex, playlistIndex) {
 
-            if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
+            if (typeof trackIndex === 'undefined' || isNaN(trackIndex)) {
                 throw new Error('Error when remove track: trackIndex must be specified as number');
+            }
 
             var playlist = playlistStore.items[playlistIndex];
 
-            if(!playlist)
+            if(!playlist) {
                 throw new Error('Error when adding track: Playlist not found.');
+            }
 
             var removal = playlist.tracks[trackIndex];
             removal.deleted = 1;
@@ -190,14 +198,14 @@
                         added: [],
                         removed: [removal.internalId]
                     }
-                }).success(function(data) {
+                }).success(function() {
                     $log.info('remove track success');
-                    playlist.tracks.splice(trackIndex, 1)[0];
+                    playlist.tracks.splice(trackIndex, 1);
                     Storage.upsert(playlist);
                 }).error(function() {
                     $log.error('remove track failed');
                 });
             }
         }
-    };
+    }
 }());

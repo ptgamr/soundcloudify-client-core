@@ -13,9 +13,9 @@
 
                 attr.$observe('toggleButton', function(val) {
                     if (val === 'true') {
-                        element.addClass(toggleClass)
+                        element.addClass(toggleClass);
                     } else {
-                        element.removeClass(toggleClass)
+                        element.removeClass(toggleClass);
                     }
                 });
 

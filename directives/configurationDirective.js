@@ -39,20 +39,20 @@
             showInfoDialog($event);
         };
 
-        vm.shareTwitter = function($event) {
+        vm.shareTwitter = function() {
             var twitterURL = 'http://twitter.com/intent/tweet?text=';
             var shareText;
 
             if (CorePlayer.state.currentTrack) {
-                shareText = 'I\'m listening to "' + CorePlayer.state.currentTrack.title + '" with @upnextplayer #upnext https://goo.gl/ljw69q';
+                shareText = 'I\'m listening to \'' + CorePlayer.state.currentTrack.title + '\' with @upnextplayer #upnext https://goo.gl/ljw69q';
             } else {
-                shareText = "#UpNext: Sweet YouTube-and-SoundCloud powered music player extension for Chrome  https://goo.gl/ljw69q";
+                shareText = '#UpNext: Sweet YouTube-and-SoundCloud powered music player extension for Chrome  https://goo.gl/ljw69q';
             }
 
             $window.open(twitterURL + encodeURIComponent(shareText), '_blank');
         };
 
-        vm.shareFacebook = function($event) {
+        vm.shareFacebook = function() {
             var facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u=';
             $window.open(facebookShareUrl + encodeURIComponent('https://goo.gl/OW3dz8'), '_blank');
         };
@@ -71,7 +71,7 @@
             function DialogController(scope, $mdDialog) {
 
                 chrome.storage.sync.get('scConfig', function(data) {
-                    scope.configuration = data['scConfig'] || {showNotification: true, scrobbleDuration: 30};
+                    scope.configuration = data.scConfig || {showNotification: true, scrobbleDuration: 30};
                 });
 
                 scope.close = function() {

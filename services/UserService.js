@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("UserService", UserService);
+        .service('UserService', UserService);
 
     function UserService($rootScope, $q, $http, API_ENDPOINT, SCConfiguration){
         var user = {
@@ -52,12 +52,12 @@
         }
 
         function getUserId() {
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
 
                 if (SCConfiguration.isChromeApp()) {
 
                     chrome.storage.local.get('gid', function(data) {
-                        resolve(data['gid']);
+                        resolve(data.gid);
                     });
 
                 } else {
@@ -73,6 +73,6 @@
                 localStorage.setItem('gid', id);
             }
         }
-    };
+    }
 
 }());

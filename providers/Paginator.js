@@ -4,8 +4,8 @@
 (function(){
     'use strict';
 
-    angular.module("soundcloudify.core")
-            .provider("Paginator", PaginatorProvider);
+    angular.module('soundcloudify.core')
+            .provider('Paginator', PaginatorProvider);
 
     function PaginatorProvider() {
 
@@ -21,7 +21,9 @@
 
             var fetch = function(appendResult, rowsCount) {
 
-                if (this.isBusy()) return;
+                if (this.isBusy()) {
+                    return;
+                }
 
                 var self = this;
                 appendResult = (typeof appendResult === 'undefined') ? false : appendResult;
@@ -42,7 +44,9 @@
 
                     function(results) {
 
-                        if (!results) return;
+                        if (!results) {
+                            return;
+                        }
 
                         var nextPageToken = results.nextPageToken || '';
                         var items = results.tracks;
@@ -69,7 +73,7 @@
             };
 
             var Paginator = function(opts) {
-                
+
                 opts = opts || {};
 
                 if (!opts.pagingFunction || (typeof opts.pagingFunction !== 'function')) {
@@ -105,7 +109,7 @@
                 sortBy: function(columnName) {
 
                     if(columnName === this.paginationModel.sort){
-                        this.paginationModel.direction = this.paginationModel.direction == 1 ? -1 : 1;
+                        this.paginationModel.direction = this.paginationModel.direction === 1 ? -1 : 1;
                     }else{
                         this.paginationModel.direction = 1;
                         this.paginationModel.sort = columnName;
@@ -122,7 +126,7 @@
                 },
 
                 isSortedBy: function(columnName) {
-                    return columnName === this.paginationModel.sort ? true : false
+                    return columnName === this.paginationModel.sort ? true : false;
                 },
 
                 getSortDirection: function() {

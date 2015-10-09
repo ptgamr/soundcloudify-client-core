@@ -1,7 +1,9 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
-            .controller('SearchController', SearchController)
+            .controller('SearchController', SearchController);
 
     function SearchController ($scope, SearchSingleton) {
         $scope.vm = SearchSingleton;
@@ -10,7 +12,7 @@
             $scope.vm.onToggled(newVal, oldVal);
         }, true);
 
-        $scope.$watch('vm.search.term', function (newVal, oldVal) {
+        $scope.$watch('vm.search.term', function (newVal) {
             if (!newVal) {
                 $scope.vm.resetSearch();
             }

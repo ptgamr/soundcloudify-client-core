@@ -2,12 +2,7 @@
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("SyncService", SyncService);
-
-    var ORIGIN_LOCAL = 'l';
-    var ORIGIN_SERVER = 's';
-    var PLAYLIST_STORAGE_KEY = 'playlist';
-    var NOW_PLAYING_LIST_KEY = 'nowPlaying';
+        .service('SyncService', SyncService);
 
     function SyncService($rootScope, $log, $q, $http, $timeout, API_ENDPOINT, StorageService, SCConfiguration){
 
@@ -17,7 +12,7 @@
         if (SCConfiguration.isChromeApp()) {
 
             chrome.storage.local.get('lastSynced', function(data) {
-                lastSynced = data['lastSynced']
+                lastSynced = data.lastSynced;
             });
 
         } else {
@@ -51,7 +46,7 @@
                     }, 1000);
                 }
             });
-        };
+        }
 
         function sync() {
 
@@ -65,13 +60,11 @@
 
             if (pulling) {
                 $log.debug('SyncService::pull() is in progress');
-                reject();
                 return;
             }
 
             if (!user) {
                 $log.debug('SyncService::pull() no user');
-                reject();
                 return;
             }
 
@@ -79,7 +72,7 @@
 
             pulling = true;
 
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
 
                 var dataURL = API_ENDPOINT + '/data';
 
@@ -90,7 +83,7 @@
                 //fetch the changes
                 $http.get(dataURL).success(function(serverData) {
 
-                    _.each(serverData.playlists, function(serverPlaylist, index) {
+                    _.each(serverData.playlists, function(serverPlaylist) {
 
                         if (serverPlaylist.deleted) {
 
@@ -147,7 +140,7 @@
                     });
 
                     /**
-                     * got a list of of changes to "Star" list, either
+                     * got a list of of changes to 'Star' list, either
                      * - a new track has been starred
                      * - a track has been unstarred (mark by deleted field)
                      * what we do:
@@ -275,7 +268,9 @@
                         var starred = _.filter(localStarredTracks, function(track) {
                             return !track.internalId;
                         });
-                        starred = _.sortBy(starred, function(track) {return track.order});
+                        starred = _.sortBy(starred, function(track) {
+                            return track.order;
+                        });
 
                         var unstarred = _.filter(localStarredTracks, function(track) {
                             return track.internalId && track.deleted === 1;
@@ -293,7 +288,9 @@
                                 })
                             );
                         } else {
-                            promises.push($q(function(resolve, reject){ resolve('star'); }));
+                            promises.push($q(function(resolve){
+                                resolve('star');
+                            }));
                         }
 
                         $q.all(promises).then(function(responses) {
@@ -314,7 +311,7 @@
                                 } else if (playlist && response.data.length){
 
                                     //update the song that has been stored
-                                    _.each(response.data[0], function(serverTrack, index) {
+                                    _.each(response.data[0], function(serverTrack) {
                                         var trackInPlaylist = _.findWhere(playlist.tracks, {uuid: serverTrack.uuid});
                                         if (trackInPlaylist) {
                                             trackInPlaylist.internalId = serverTrack.internalId;
@@ -372,7 +369,9 @@
 
         function bumpLastSynced(lastSynced) {
 
-            if (!lastSynced) return;
+            if (!lastSynced) {
+                return;
+            }
 
             if (SCConfiguration.isChromeApp()) {
                 chrome.storage.local.set({'lastSynced': lastSynced});
@@ -383,6 +382,6 @@
             $rootScope.$broadcast('sync.completed');
             $rootScope.syncing = false;
         }
-    };
+    }
 
 }());

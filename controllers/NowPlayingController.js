@@ -1,9 +1,11 @@
 (function() {
 
-    angular.module('soundcloudify.core')
-            .controller('NowPlayingController', NowPlayingController)
+    'use strict';
 
-    function NowPlayingController($scope, Category, $mdDialog, PlaylistService, NowPlaying, CorePlayer, TrackAdapter, $timeout) {
+    angular.module('soundcloudify.core')
+            .controller('NowPlayingController', NowPlayingController);
+
+    function NowPlayingController($scope, Category, $mdDialog, PlaylistService, NowPlaying, CorePlayer, TrackAdapter) {
 
         var vm = this;
 
@@ -56,14 +58,15 @@
                     controller: DialogController
                 });
 
-                function DialogController(scope, $mdDialog, player) {
+                function DialogController(scope, $mdDialog) {
                     scope.newPlaylistName = '';
-                    scope.addNew = function($event) {}
+                    scope.addNew = function() {};
                     scope.createPlaylist = function() {
                         if (!scope.newPlaylistName) {
                             return;
                         }
-                        var newPlaylist = PlaylistService.newPlaylist(scope.newPlaylistName, vm.tracks)
+
+                        PlaylistService.newPlaylist(scope.newPlaylistName, vm.tracks)
                                                 .then(function() {
                                                     scope.newPlaylistName = '';
                                                     $mdDialog.hide();
@@ -91,6 +94,6 @@
             }, function() {
                 //vm.alert = 'You decided to keep your debt.';
             });
-        }
+        };
     }
 }());

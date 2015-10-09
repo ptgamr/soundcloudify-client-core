@@ -13,13 +13,13 @@
 
                 var animateEl, textEl, textCloneEl, elementWidth, textWidth, animating, margin;
 
-                attrs.$observe('trackTitle', function(val) {
+                attrs.$observe('trackTitle', function() {
                     if (animating) {
                         clearAnimation();
                     }
                 });
 
-                element.on('mouseover', function(e) {
+                element.on('mouseover', function() {
                     if (animating) {
                         return;
                     }

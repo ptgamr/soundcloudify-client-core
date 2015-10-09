@@ -2,17 +2,14 @@
  * TODO:
  *
  * - upnext track order are not stored correct in DB. Relative track's order is not updated
- * 
+ *
  */
 
 (function(){
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("NowPlaying", NowPlayingService);
-
-    var ORIGIN_LOCAL = 'l';
-    var ORIGIN_SERVER = 's';
+        .service('NowPlaying', NowPlayingService);
 
     var DEFAULT_STATE = {
         currentTrack: false,
@@ -32,7 +29,6 @@
 
         var isExtension = SCConfiguration.isExtension();
         var isChromeApp = SCConfiguration.isChromeApp();
-        var isWeb = SCConfiguration.isWeb();
 
         var backgroundPage = isExtension ? chrome.extension.getBackgroundPage() : null;
 
@@ -46,7 +42,7 @@
             state = backgroundPage.mainPlayer.state;
         } else if (isChromeApp) {
             chrome.storage.local.get('playerstate', function(data) {
-                state = data['playerstate']
+                state = data.playerstate;
             });
         } else {
             state = JSON.parse(localStorage.getItem('playerstate')) || DEFAULT_STATE;
@@ -93,7 +89,7 @@
             return Storage.getById(uuid);
         }
 
-        function getTracks(callback){
+        function getTracks(){
             return Storage.getTracks();
         }
 
@@ -102,7 +98,7 @@
          */
         function addTrack(track, position) {
 
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
 
                 //we need to do a copy here to ensure each track we add
                 //to the playlist will have a unique id
@@ -127,7 +123,7 @@
                             Storage.insert(track);
 
                             if (typeof position !== 'undefined') {
-                                
+
                                 nowplaying.trackIds.splice(position, 0, track.uuid);
 
                                 var tobeUpsert = _.filter(nowplaying.trackIds, function(uuid, index) {
@@ -165,7 +161,7 @@
          */
         function addTracks(tracks) {
 
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
 
                 removeAllTracks().then(function() {
 
@@ -207,7 +203,7 @@
          * Remove all tracks from nowplaying
          */
         function removeAllTracks() {
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
                 Storage.delete(nowplaying.trackIds);
                 nowplaying.trackIds = [];
                 _saveTrackIds([]);
@@ -232,7 +228,7 @@
         /**
          * Get the state getting from the background
          */
-        function getState(callback) {
+        function getState() {
             return state;
         }
 
@@ -259,6 +255,6 @@
                 }
             }
         }
-    };
+    }
 
 }());

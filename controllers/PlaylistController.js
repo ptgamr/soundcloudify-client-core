@@ -1,7 +1,9 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
-            .controller('PlaylistController', PlaylistController)
+            .controller('PlaylistController', PlaylistController);
 
     function PlaylistController($mdToast, $mdDialog, $state, $scope, PlaylistService, PlaylistImporter, StarService, CorePlayer, GATracker) {
         var vm = this;
@@ -21,7 +23,9 @@
                 return;
             }
 
-            if (!vm.newPlaylistName) return;
+            if (!vm.newPlaylistName) {
+                return;
+            }
             PlaylistService.newPlaylist(vm.newPlaylistName).then(function() {
                 vm.newPlaylistName = '';
                 GATracker.trackPlaylist('add new');
@@ -85,7 +89,7 @@
                     scope.loadedTracks = null;
                     scope.loading = false;
 
-                    scope.$watch('playlistUrl', function(newVal, oldVal) {
+                    scope.$watch('playlistUrl', function(newVal) {
 
                         if (newVal && PlaylistImporter.extractPlaylistId(newVal)) {
                             scope.invalidUrl = false;
@@ -144,6 +148,6 @@
                     };
                 }
             }
-        }
+        };
     }
 }());

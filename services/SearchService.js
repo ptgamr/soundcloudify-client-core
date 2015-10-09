@@ -1,10 +1,10 @@
+/*globals ServiceHelpers*/
+
 (function(){
     'use strict';
 
     angular.module('soundcloudify.core')
-        .service("SearchService", SearchService);
-
-    var DEFAULT_LIMIT = 20;
+        .service('SearchService', SearchService);
 
     function SearchService($http, CLIENT_ID, YOUTUBE_KEY, TrackAdapter, $q){
 
@@ -22,13 +22,15 @@
                     method: 'GET',
                     params: params,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                        if (!result || !result.collection) return [];
+                        if (!result || !result.collection) {
+                            return [];
+                        }
                         return {
                             tracks: TrackAdapter.adaptMultiple(result.collection, 'sc')
                         };
                     })
                 }).success(function(data) {
-                    resolve(data)
+                    resolve(data);
                 }).error(function() {
                     reject();
                 });
@@ -56,7 +58,9 @@
                 method: 'GET',
                 params: params
             }).success(function(result) {
-                if (!result || !result.items) defer.resolve([]);
+                if (!result || !result.items) {
+                    defer.resolve([]);
+                }
 
                 nextPageToken = result.nextPageToken;
 
@@ -89,11 +93,13 @@
                     method: 'GET',
                     params: secondRequestParams,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                        if (!result || !result.items) return [];
+                        if (!result || !result.items) {
+                            return [];
+                        }
                         return {
                             nextPageToken: nextPageToken,
                             tracks: TrackAdapter.adaptMultiple(result.items, 'yt')
-                        }
+                        };
                     })
                 }).success(function(data) {
                     defer.resolve(data);
@@ -107,6 +113,6 @@
 
             return defer.promise;
         }
-    };
+    }
 
 }());

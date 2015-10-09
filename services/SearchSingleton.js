@@ -1,7 +1,9 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.core')
-            .service('SearchSingleton', SearchSingleton)
+            .service('SearchSingleton', SearchSingleton);
 
     function SearchSingleton ($q, SuggestionService, CorePlayer, Paginator, SearchService, $filter, GATracker) {
 
@@ -17,7 +19,7 @@
 
         vm.recentSearch = JSON.parse(localStorage.getItem('recentSearch')) || [];
 
-        var soundcloudPaginator, youtubePaginator, mixedResults = [], cacheForFilter;
+        var mixedResults = [];
 
         vm.toggle = JSON.parse(localStorage.getItem('toggle')) || {
             soundcloud: true,
@@ -59,7 +61,9 @@
 
             //if (newSearch && (!vm.search.term || vm.search.term === lastSearchTerm)) return;
 
-            if (!vm.selectedItem || vm.selectedItem.value === '') return;
+            if (!vm.selectedItem || vm.selectedItem.value === '') {
+                return;
+            }
 
             var tempRecentSearch = angular.copy(vm.recentSearch);
 
@@ -126,7 +130,7 @@
         }
 
         function suggest (query) {
-            return vm.showSuggestion ? SuggestionService.suggest(query) : $q(function(resolve, reject) {
+            return vm.showSuggestion ? SuggestionService.suggest(query) : $q(function(resolve) {
                 resolve([]);
                 vm.showSuggestion = true;
             });
@@ -135,7 +139,9 @@
         function getOriginFilter(toggle) {
             var filter = '';
 
-            if (!toggle) return;
+            if (!toggle) {
+                return;
+            }
 
             if (toggle.soundcloud && toggle.youtube) {
                 filter = '';

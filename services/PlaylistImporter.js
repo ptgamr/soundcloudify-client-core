@@ -16,7 +16,7 @@
             if (!playlistUrl) {
                 $log.error('playlist url is missing');
                 return;
-            };
+            }
 
             var regExp = /^.*(youtu.be\/|list=)([^#\&\?]*).*/;
             var match = playlistUrl.match(regExp);
@@ -51,7 +51,7 @@
                     if (!result || !result.items || !result.items.length) {
                         reject();
                         return;
-                    };
+                    }
 
                     var playlistName = result.items[0].snippet.title,
                         resolvedPlaylistId = result.items[0].id;
@@ -60,7 +60,7 @@
                         id: resolvedPlaylistId,
                         name: playlistName
                     });
-                    
+
                 }).error(function() {
                     reject();
                 });
@@ -70,7 +70,7 @@
         }
 
         function fetchPlaylistItems(playlistId, nextPageToken, allItems) {
-            
+
             return $q(function(resolve, reject) {
                 var parts = ['id', 'snippet'];
                 var fields = [
@@ -124,7 +124,7 @@
                     reject();
                 });
             }).then(function(data) {
-                
+
                 allItems = (allItems || []).concat(data.items);
 
                 if (data.nextPageToken) {
@@ -134,5 +134,5 @@
                 return allItems;
             });
         }
-    };
+    }
 }(angular));
